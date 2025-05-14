@@ -1,0 +1,40 @@
+plugins {
+    id 'java'
+}
+
+group 'cl.francisco'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()  // Para que Gradle pueda obtener las dependencias
+    maven { url 'https://repo.cucumber.io/repository/maven-public/' }
+}
+
+dependencies {
+    // Selenium
+    implementation 'org.seleniumhq.selenium:selenium-java:4.0.0'
+    implementation 'org.seleniumhq.selenium:selenium-support:4.0.0'
+
+    // Cucumber
+    implementation 'io.cucumber:cucumber-java:7.0.0' // ← esta es CLAVE para @Given, @When...
+    implementation 'io.cucumber:cucumber-junit:7.0.0'
+
+    // JUnit 4 (necesario para @RunWith)
+    testImplementation 'junit:junit:4.13.2'
+
+    // JUnit 5 (opcional, solo si después usarás pruebas sueltas con JUnit 5)
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.8.2'
+
+    implementation 'io.github.bonigarcia:webdrivermanager:5.6.3'
+    implementation 'org.postgresql:postgresql:42.2.5' // versión reciente
+}
+
+
+test {
+    useJUnit() // <-- IMPORTANTE: no debe estar useJUnitPlatform()
+
+    // Asegúrate de que Cucumber pueda usar estos tags
+    systemProperty 'cucumber.options', "--tags @FarmaciasAhumada and @automatizacion-farmacias"
+}
