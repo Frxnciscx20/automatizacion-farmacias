@@ -28,7 +28,9 @@ public class FarmaciasAhumadaStepDefinitions {
 
     @Given("que el usuario navega al sitio de Farmacias Ahumada")
     public void que_el_usuario_navega_al_sitio_de_Farmacias_Ahumada() {
-        WebDriverManager.edgedriver().setup();
+        // Ruta fija al driver Edge
+        System.setProperty("webdriver.edge.driver", "C:\\Users\\Francisco\\Documents\\Drivers\\msedgedriver.exe");
+
         EdgeOptions options = new EdgeOptions();
         options.addArguments("--remote-allow-origins=*");
         driver = new EdgeDriver(options);
@@ -41,6 +43,7 @@ public class FarmaciasAhumadaStepDefinitions {
             ahumadaPage.clickBtnSiUsoDeCookies();
         }
     }
+
 
     @When("^el usuario en Farmacias Ahumada busca el medicamento \"([^\"]*)\"$")
     public void el_usuario_busca_el_medicamento(String medicamento) {
