@@ -1,4 +1,4 @@
-Feature: Búsqueda de medicamentos en Cruz Verde
+Feature: Búsqueda de medicamentos en SalcoBrand
 
   @FarmaciasSalcoBrand @automatizacion-farmacias
   Scenario Outline: Buscar un medicamento y verificar información
