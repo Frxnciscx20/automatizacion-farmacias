@@ -28,7 +28,6 @@ public class FarmaciasAhumadaStepDefinitions {
 
     @Given("que el usuario navega al sitio de Farmacias Ahumada")
     public void que_el_usuario_navega_al_sitio_de_Farmacias_Ahumada() {
-        // Ruta fija al driver Edge
         System.setProperty("webdriver.edge.driver", "C:\\Users\\Francisco\\Documents\\Drivers\\msedgedriver.exe");
 
         EdgeOptions options = new EdgeOptions();
@@ -66,28 +65,22 @@ public class FarmaciasAhumadaStepDefinitions {
         try {
             String precioTexto = ahumadaPage.getTextPrecioPromocionProducto();
 
-            // Verificar si el texto del precio existe
             if (precioTexto == null || precioTexto.trim().isEmpty()) {
                 precioPromocional = 0;
                 System.out.println("Precio Promoción: 0 (no disponible)");
                 return;
             }
-
-            // Usar expresión regular para encontrar el precio en formato $xx.xxx
             Pattern pattern = Pattern.compile("\\$\\d{1,3}(\\.\\d{3})*");
             Matcher matcher = pattern.matcher(precioTexto);
 
             if (matcher.find()) {
                 String precioEncontrado = matcher.group(); // Ej: "$44.199"
 
-                // Eliminar el símbolo $ y puntos
                 String soloNumeros = precioEncontrado.replaceAll("[^\\d]", ""); // Resultado: "44199"
 
-                // Convertir a long y guardar
                 precioPromocional = Long.parseLong(soloNumeros);
                 System.out.println("Precio Promoción: " + precioPromocional);
             } else {
-                // No se encontró un precio con formato esperado
                 precioPromocional = 0;
                 System.out.println("Precio Promoción: 0 (formato no encontrado)");
             }
@@ -148,5 +141,4 @@ public class FarmaciasAhumadaStepDefinitions {
             driver.quit();
         }
     }
-
 }

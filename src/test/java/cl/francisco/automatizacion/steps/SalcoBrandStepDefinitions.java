@@ -19,7 +19,6 @@ public class SalcoBrandStepDefinitions {
     private WebDriver driver;
     private SalcoBrandPage salcoBrandPage;
 
-    // Variables para almacenar los datos del producto
     private String nombreProducto;
     private double precioPromocional;
     private double precioNormal;
@@ -27,7 +26,6 @@ public class SalcoBrandStepDefinitions {
 
     @Given("que el usuario navega al sitio de SalcoBrand")
     public void que_el_usuario_navega_al_sitio_de_SalcoBrand() {
-        // Ruta fija al driver Edge
         System.setProperty("webdriver.edge.driver", "C:\\Users\\Francisco\\Documents\\Drivers\\msedgedriver.exe");
 
         EdgeOptions options = new EdgeOptions();
@@ -63,7 +61,6 @@ public class SalcoBrandStepDefinitions {
                 return;
             }
 
-            // Expresión regular para encontrar precios en formato $xx.xxx
             Pattern pattern = Pattern.compile("\\$\\d{1,3}(\\.\\d{3})*");
             Matcher matcher = pattern.matcher(precioTexto);
 
@@ -93,8 +90,6 @@ public class SalcoBrandStepDefinitions {
                 System.out.println("Precio Normal: 0 (no disponible)");
                 return;
             }
-
-            // Expresión regular para encontrar precios en formato $xx.xxx
             Pattern pattern = Pattern.compile("\\$\\d{1,3}(\\.\\d{3})*");
             Matcher matcher = pattern.matcher(precioTexto);
 
