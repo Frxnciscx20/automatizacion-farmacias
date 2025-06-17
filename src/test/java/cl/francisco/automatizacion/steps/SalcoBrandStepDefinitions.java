@@ -23,6 +23,7 @@ public class SalcoBrandStepDefinitions {
     private double precioPromocional;
     private double precioNormal;
     private String urlActual;
+    private String imagenDelMedicamento;
 
     @Given("que el usuario navega al sitio de SalcoBrand")
     public void que_el_usuario_navega_al_sitio_de_SalcoBrand() {
@@ -137,7 +138,7 @@ public class SalcoBrandStepDefinitions {
 
             int idMedicamento = MedicamentoDAO.buscarIdMedicamentoPorNombre(nombreProducto);
             if (idMedicamento == -1) {
-                idMedicamento = MedicamentoDAO.insertarMedicamento(nombreProducto, descripcion, laboratorio, presentacion, urlActual);
+                idMedicamento = MedicamentoDAO.insertarMedicamento(nombreProducto, descripcion, laboratorio, presentacion, urlActual, imagenDelMedicamento);
             }
 
             boolean stock = true;
@@ -152,5 +153,11 @@ public class SalcoBrandStepDefinitions {
         finally {
             driver.quit();
         }
+    }
+
+    @And("guardo la URL de la imagen del medicamento en SalcoBrand")
+    public void guardoLaURLDeLaImagenDelMedicamentoEnSalcoBrand() {
+        imagenDelMedicamento = salcoBrandPage.getUrlImagenMedicamento();
+        System.out.println("URL IMAGEN DEL MEDICAMENTO" + imagenDelMedicamento);
     }
 }

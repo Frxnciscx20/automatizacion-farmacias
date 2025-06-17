@@ -61,8 +61,8 @@ public class MedicamentoDAO {
         return -1;
     }
 
-    public static int insertarMedicamento(String nombre, String descripcion, String laboratorio, String presentacion, String url_medicamento) {
-        String sql = "INSERT INTO medicamento (nombre, descripcion, laboratorio, presentacion, url_medicamento) VALUES (?, ?, ?, ?, ?) RETURNING id_medicamento";
+    public static int insertarMedicamento(String nombre, String descripcion, String laboratorio, String presentacion, String url_medicamento, String imagen_url) {
+        String sql = "INSERT INTO medicamento (nombre, descripcion, laboratorio, presentacion, url_medicamento, imagen_url) VALUES (?, ?, ?, ?, ?, ?) RETURNING id_medicamento";
 
         try (Connection conn = ConexionDB.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -72,6 +72,7 @@ public class MedicamentoDAO {
             stmt.setString(3, laboratorio);
             stmt.setString(4, presentacion);
             stmt.setString(5, url_medicamento);
+            stmt.setString(6, imagen_url);
 
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {

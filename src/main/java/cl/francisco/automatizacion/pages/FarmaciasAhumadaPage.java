@@ -41,6 +41,9 @@ public class FarmaciasAhumadaPage {
     @FindBy(xpath = "(//button[@class='close p-0 m-0'])[2]")
     private WebElement btnCerrarAlertaOferta;
 
+    @FindBy(xpath = "//span[@class='swiper-slide swiper-slide-active']/img")
+    private WebElement urlImagenMedicamento;
+
     public void sendKeysInputBuscarMedicamento(String medicamento){
         utilidades.waitUntilElementIsVisible(inputBuscarMedicamento);
         inputBuscarMedicamento.sendKeys(medicamento);
@@ -82,4 +85,9 @@ public class FarmaciasAhumadaPage {
         utilidades.waitUntilElementIsVisible(btnCerrarAlertaOferta);
         btnCerrarAlertaOferta.click();
     }
+
+    public String getUrlImagenMedicamento() {
+        return urlImagenMedicamento.getAttribute("src");
+    }
+
 }

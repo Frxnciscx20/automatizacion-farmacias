@@ -30,6 +30,9 @@ public class SalcoBrandPage {
     @FindBy(xpath = "//div[@class='old-prices']/span")
     private WebElement textPrecioNormalProductoSalcoBrand;
 
+    @FindBy(xpath = "//source[@type='image/webp']/../img")
+    private WebElement urlImagenMedicamento;
+
     public boolean isVisibleInputBuscarMedicamentos(){
         utilidades.waitUntilElementIsVisibleNonThrow(inputBuscarSalcoBrand,30);
         return utilidades.isVisible(inputBuscarSalcoBrand);
@@ -57,5 +60,9 @@ public class SalcoBrandPage {
 
     public String getTextPrecioNormalProductoSalcoBrandPage() {
         return textPrecioNormalProductoSalcoBrand.getText();
+    }
+
+    public String getUrlImagenMedicamento() {
+        return urlImagenMedicamento.getAttribute("src");
     }
 }

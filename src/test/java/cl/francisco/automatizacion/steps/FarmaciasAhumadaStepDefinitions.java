@@ -25,6 +25,7 @@ public class FarmaciasAhumadaStepDefinitions {
     private double precioPromocional;
     private double precioNormal;
     private String urlActual;
+    private String imagenDelMedicamento;
 
     @Given("que el usuario navega al sitio de Farmacias Ahumada")
     public void que_el_usuario_navega_al_sitio_de_Farmacias_Ahumada() {
@@ -126,7 +127,7 @@ public class FarmaciasAhumadaStepDefinitions {
 
             int idMedicamento = MedicamentoDAO.buscarIdMedicamentoPorNombre(nombreProducto);
             if (idMedicamento == -1) {
-                idMedicamento = MedicamentoDAO.insertarMedicamento(nombreProducto, descripcion, laboratorio, presentacion, urlActual);
+                idMedicamento = MedicamentoDAO.insertarMedicamento(nombreProducto, descripcion, laboratorio, presentacion, urlActual, imagenDelMedicamento);
             }
 
             boolean stock = true;
@@ -140,5 +141,11 @@ public class FarmaciasAhumadaStepDefinitions {
         } finally {
             driver.quit();
         }
+    }
+
+    @And("guardo la URL de la imagen del medicamento en Farmacias Ahumada")
+    public void guardoLaURLDeLaImagenDelMedicamentoEnFarmaciasAhumada() {
+        imagenDelMedicamento = ahumadaPage.getUrlImagenMedicamento();
+        System.out.println("URL IMAGEN DEL MEDICAMENTO: " + imagenDelMedicamento);
     }
 }
