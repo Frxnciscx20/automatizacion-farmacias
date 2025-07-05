@@ -12,8 +12,12 @@ Feature: Búsqueda de medicamentos en SalcoBrand
     And se guarda la información del medicamento de SalcoBrand en la base de datos
 
     Examples:
-      | medicamento |
-      | Lamictal    |
-      | Brevex      |
-      | Ozempic     |
+      |  medicamento                   |
+#      |  Lamictal                      |
+#      |  Brevex                        |
+#      |  Ozempic                       |
+#      |  Ibuprofeno                    |
+      |  Valpax                        |
+      |  Paltomiel Pediátrico          |
+
 

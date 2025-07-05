@@ -11,6 +11,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.edge.EdgeOptions;
 
+import java.nio.file.Paths;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,7 +28,8 @@ public class SalcoBrandStepDefinitions {
 
     @Given("que el usuario navega al sitio de SalcoBrand")
     public void que_el_usuario_navega_al_sitio_de_SalcoBrand() {
-        System.setProperty("webdriver.edge.driver", "C:\\Users\\Francisco\\Documents\\Drivers\\msedgedriver.exe");
+        String driverPath = Paths.get("drivers", "msedgedriver.exe").toAbsolutePath().toString();
+        System.setProperty("webdriver.edge.driver", driverPath);
 
         EdgeOptions options = new EdgeOptions();
         options.addArguments("--remote-allow-origins=*");

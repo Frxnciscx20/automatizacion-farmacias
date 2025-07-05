@@ -9,12 +9,15 @@ import org.openqa.selenium.edge.EdgeOptions;
 import io.github.bonigarcia.wdm.WebDriverManager;
 
 import java.math.BigDecimal;
+import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import cl.francisco.automatizacion.utils.NotificacionClient;
+
 
 public class FarmaciasAhumadaStepDefinitions {
 
@@ -29,13 +32,13 @@ public class FarmaciasAhumadaStepDefinitions {
 
     @Given("que el usuario navega al sitio de Farmacias Ahumada")
     public void que_el_usuario_navega_al_sitio_de_Farmacias_Ahumada() {
-        System.setProperty("webdriver.edge.driver", "C:\\Users\\Francisco\\Documents\\Drivers\\msedgedriver.exe");
+        String driverPath = Paths.get("drivers", "msedgedriver.exe").toAbsolutePath().toString();
+        System.setProperty("webdriver.edge.driver", driverPath);
 
         EdgeOptions options = new EdgeOptions();
         options.addArguments("--remote-allow-origins=*");
         driver = new EdgeDriver(options);
         driver.manage().window().maximize();
-
         driver.get("https://www.farmaciasahumada.cl");
         ahumadaPage = new FarmaciasAhumadaPage(driver);
 
@@ -118,20 +121,38 @@ public class FarmaciasAhumadaStepDefinitions {
             int idFarmacia = 2;
             String nombreFarmacia = "Farmacias Ahumada";
             String urlWeb = "https://www.farmaciasahumada.cl";
+
             if (!MedicamentoDAO.existeFarmacia(idFarmacia)) {
                 MedicamentoDAO.guardarFarmacia(idFarmacia, nombreFarmacia, urlWeb);
             }
+
             String descripcion = "Sin descripción";
             String laboratorio = "Desconocido";
             String presentacion = "Desconocida";
 
             int idMedicamento = MedicamentoDAO.buscarIdMedicamentoPorNombre(nombreProducto);
             if (idMedicamento == -1) {
-                idMedicamento = MedicamentoDAO.insertarMedicamento(nombreProducto, descripcion, laboratorio, presentacion, urlActual, imagenDelMedicamento);
+                idMedicamento = MedicamentoDAO.insertarMedicamento(
+                        nombreProducto,
+                        descripcion,
+                        laboratorio,
+                        presentacion,
+                        urlActual,
+                        imagenDelMedicamento
+                );
             }
 
+            // 🔍 Obtener último precio anterior (antes de guardar el nuevo)
+            double precioAnterior = MedicamentoDAO.obtenerUltimoPrecioPromocional(idMedicamento, idFarmacia);
+
+            // 💾 Guardar nuevo precio
             boolean stock = true;
             MedicamentoDAO.guardarPrecio(idMedicamento, idFarmacia, precioPromocional, precioNormal);
+
+            // 📩 Notificar solo si el precio bajó
+            if (precioPromocional < precioAnterior) {
+                NotificacionClient.notificarBajadaPrecio(idMedicamento, precioPromocional);
+            }
 
             System.out.println("Datos guardados correctamente.");
 
@@ -142,6 +163,8 @@ public class FarmaciasAhumadaStepDefinitions {
             driver.quit();
         }
     }
+
+
 
     @And("guardo la URL de la imagen del medicamento en Farmacias Ahumada")
     public void guardoLaURLDeLaImagenDelMedicamentoEnFarmaciasAhumada() {

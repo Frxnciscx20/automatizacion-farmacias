@@ -111,4 +111,26 @@ public class MedicamentoDAO {
             e.printStackTrace();
         }
     }
+
+    public static double obtenerUltimoPrecioPromocional(int idMedicamento, int idFarmacia) {
+        String sql = "SELECT precio_actual FROM precio " +
+                "WHERE id_medicamento = ? AND id_farmacia = ? " +
+                "ORDER BY fecha_actualizacion DESC LIMIT 1";
+
+        try (Connection conn = ConexionDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, idMedicamento);
+            stmt.setInt(2, idFarmacia);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getDouble("precio_actual");
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al obtener el último precio promocional: " + e.getMessage());
+        }
+        return Double.MAX_VALUE; // Retornar un número muy alto si no hay precios anteriores
+    }
 }
