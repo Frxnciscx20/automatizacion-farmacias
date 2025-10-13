@@ -12,11 +12,11 @@ Feature: Búsqueda de medicamentos en Farmacias Ahumada
     And se guarda la información del medicamento en la base de datos
 
     Examples:
-      |  medicamento                   |
-#      |  Lamictal                      |
-#      |  Brevex                        |
-#      |  Ozempic                       |
-#      |  Valpax                        |
-#      |  Paltomiel Pediátrico          |
-#      |  Melatonina 3 mg x 60 Capsulas |
+      |  medicamento                         |
+      |  Lamictal                            |
+      |  Brevex                              |
+      |  Ozempic                             |
+      |  Valpax                              |
+      |  Paltomiel Pediátrico                |
+      |  Melatonina 3 mg x 60 Capsulas       |
       |  Clonazepam 2 mg Caja 30 Comp. CHILE |
