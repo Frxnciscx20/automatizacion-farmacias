@@ -13,10 +13,10 @@ Feature: Búsqueda de medicamentos en SalcoBrand
 
     Examples:
       |  medicamento                   |
-#      |  Lamictal                      |
-#      |  Brevex                        |
-#      |  Ozempic                       |
-#      |  Ibuprofeno                    |
+      |  Lamictal                      |
+      |  Brevex                        |
+      |  Ozempic                       |
+      |  Ibuprofeno                    |
       |  Valpax                        |
       |  Paltomiel Pediátrico          |
 

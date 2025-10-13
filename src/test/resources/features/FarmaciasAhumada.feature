@@ -17,5 +17,6 @@ Feature: Búsqueda de medicamentos en Farmacias Ahumada
 #      |  Brevex                        |
 #      |  Ozempic                       |
 #      |  Valpax                        |
-      |  Paltomiel Pediátrico          |
-      |  Melatonina 3 mg x 60 Capsulas |
+#      |  Paltomiel Pediátrico          |
+#      |  Melatonina 3 mg x 60 Capsulas |
+      |  Clonazepam 2 mg Caja 30 Comp. CHILE |

@@ -24,10 +24,10 @@ public class SalcoBrandPage {
     @FindBy(xpath = "//h1[@class='product-name product_name_pdp']")
     private WebElement textNombreProductoSalcoBrand;
 
-    @FindBy(xpath = "//div[@class='normal withoutSbpay']/span")
+    @FindBy(xpath = "(//div[@class='offer-price']/span)[1]")
     private WebElement textPrecioOfertaProductoSalcoBrand;
 
-    @FindBy(xpath = "//div[@class='old-prices']/span")
+    @FindBy(xpath = "(//div[@class='normal']/span)[1]")
     private WebElement textPrecioNormalProductoSalcoBrand;
 
     @FindBy(xpath = "//source[@type='image/webp']/../img")

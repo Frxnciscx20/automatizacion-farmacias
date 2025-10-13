@@ -28,16 +28,17 @@ public class SalcoBrandStepDefinitions {
 
     @Given("que el usuario navega al sitio de SalcoBrand")
     public void que_el_usuario_navega_al_sitio_de_SalcoBrand() {
-        String driverPath = Paths.get("drivers", "msedgedriver.exe").toAbsolutePath().toString();
-        System.setProperty("webdriver.edge.driver", driverPath);
+        System.setProperty("webdriver.edge.driver", "C:\\Users\\Francisco\\Documents\\Drivers\\msedgedriver.exe");
 
         EdgeOptions options = new EdgeOptions();
         options.addArguments("--remote-allow-origins=*");
+
         driver = new EdgeDriver(options);
         driver.manage().window().maximize();
         driver.get("https://salcobrand.cl");
         salcoBrandPage = new SalcoBrandPage(driver);
     }
+
 
     @When("^el usuario en Farmacias SalcoBrand busca el medicamento \"([^\"]*)\"$")
     public void el_usuario_busca_el_medicamento(String medicamento) {

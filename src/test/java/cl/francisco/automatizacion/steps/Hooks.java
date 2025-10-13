@@ -4,7 +4,6 @@ import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.edge.EdgeDriver;
-import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.edge.EdgeOptions;
 
 public class Hooks {
@@ -13,7 +12,8 @@ public class Hooks {
 
     @Before
     public void setUp() {
-        WebDriverManager.edgedriver().setup();
+        // 👉 Ruta exacta de tu msedgedriver
+        System.setProperty("webdriver.edge.driver", "C:\\Users\\Francisco\\Documents\\Drivers\\msedgedriver.exe");
 
         EdgeOptions options = new EdgeOptions();
         options.addArguments("--remote-allow-origins=*");
