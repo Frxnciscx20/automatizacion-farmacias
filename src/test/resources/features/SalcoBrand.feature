@@ -19,5 +19,6 @@ Feature: Búsqueda de medicamentos en SalcoBrand
       |  Ibuprofeno                    |
       |  Valpax                        |
       |  Paltomiel Pediátrico          |
+      | Clonazepam (B) 2mg 30 Comprimidos |
 
 

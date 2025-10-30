@@ -49,4 +49,12 @@ public class Utilidades {
             return false;
         }
     }
+
+    public void esperarAntesDeContinuar() {
+        try {
+            Thread.sleep(15000); // 15 segundos
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt(); // buena práctica
+        }
+    }
 }
