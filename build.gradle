@@ -29,6 +29,7 @@ dependencies {
 
     implementation 'io.github.bonigarcia:webdrivermanager:5.6.3'
     implementation 'org.postgresql:postgresql:42.2.5' // versión reciente
+    testImplementation 'io.github.bonigarcia:webdrivermanager:5.9.2'
 }
 
 

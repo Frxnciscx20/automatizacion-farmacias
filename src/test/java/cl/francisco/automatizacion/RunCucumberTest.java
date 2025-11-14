@@ -8,7 +8,7 @@ import org.junit.runner.RunWith;
 @CucumberOptions(
         features = "src/test/resources/features",
         glue = "cl.francisco.automatizacion.steps",
-        tags = "(@CruzVerde) and @automatizacion-farmacias",
+        tags = "(@CruzVerde or @FarmaciasAhumada or @FarmaciasSalcoBrand) and @automatizacion-farmacias",
         plugin = {"pretty", "html:target/cucumber-report.html"}
 )
 public class RunCucumberTest {

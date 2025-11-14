@@ -3,8 +3,7 @@ package cl.francisco.automatizacion.steps;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.edge.EdgeDriver;
-import org.openqa.selenium.edge.EdgeOptions;
+import cl.francisco.automatizacion.driver.DriverFactory;
 
 public class Hooks {
 
@@ -12,20 +11,19 @@ public class Hooks {
 
     @Before
     public void setUp() {
-        // 👉 Ruta exacta de tu msedgedriver
-        System.setProperty("webdriver.edge.driver", "C:\\Users\\Francisco\\Documents\\Drivers\\msedgedriver.exe");
-
-        EdgeOptions options = new EdgeOptions();
-        options.addArguments("--remote-allow-origins=*");
-
-        driver = new EdgeDriver(options);
-        driver.manage().window().maximize();
+        try {
+            driver = DriverFactory.createDriver();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("❌ Error al inicializar el WebDriver: " + e.getMessage());
+        }
     }
 
     @After
     public void tearDown() {
         if (driver != null) {
             driver.quit();
+            System.out.println("🧹 Navegador cerrado correctamente");
         }
     }
 

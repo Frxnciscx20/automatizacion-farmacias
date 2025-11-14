@@ -1,10 +1,16 @@
 package cl.francisco.automatizacion.pages;
 
 import cl.francisco.automatizacion.utils.Utilidades;
+import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
 
 public class FarmaciasAhumadaPage {
 
@@ -17,25 +23,26 @@ public class FarmaciasAhumadaPage {
         PageFactory.initElements(driver, this);
     }
 
-    @FindBy (xpath = "(//form[@role='search'])[1]/input[1]")
+    // 🔍 ELEMENTOS
+    @FindBy(xpath = "(//form[@role='search'])[1]/input[1]")
     private WebElement inputBuscarMedicamento;
 
-    @FindBy (xpath =  "//li[@id='product-0']/a")
+    @FindBy(xpath = "//li[@id='product-0']/a")
     private WebElement btnPrimeraOpcionMedicamento;
 
-    @FindBy (xpath = "//h1[@class='product-name']")
+    @FindBy(xpath = "//h1[@class='product-name']")
     private WebElement textNombreProducto;
 
-    @FindBy (xpath = "(//div[@class='price'])[1]")
+    @FindBy(xpath = "(//div[@class='price'])[1]")
     private WebElement textPrecioPromocionProducto;
 
-    @FindBy (xpath = "//span[@class='strike-through list text-decoration-none']")
+    @FindBy(xpath = "//span[@class='strike-through list text-decoration-none']")
     private WebElement textPrecioNormalProducto;
 
-    @FindBy (xpath = "//div[normalize-space(text())='Uso de cookies']")
+    @FindBy(xpath = "//div[normalize-space(text())='Uso de cookies']")
     private WebElement textUsoDeCookies;
 
-    @FindBy(xpath = "//button[normalize-space(text())='Sì']")
+    @FindBy(xpath = "//button[normalize-space(text())='Sí' or normalize-space(text())='Sì' or normalize-space(text())='Aceptar']")
     private WebElement btnSiUsoDeCookies;
 
     @FindBy(xpath = "(//button[@class='close p-0 m-0'])[2]")
@@ -44,50 +51,76 @@ public class FarmaciasAhumadaPage {
     @FindBy(xpath = "//span[@class='swiper-slide swiper-slide-active']/img")
     private WebElement urlImagenMedicamento;
 
-    public void sendKeysInputBuscarMedicamento(String medicamento){
+    // 🕒 MÉTODOS MEJORADOS CON ESPERAS ROBUSTAS
+
+    public boolean isVisibleInputBuscarMedicamento() {
+        utilidades.waitUntilElementIsVisibleNonThrow(inputBuscarMedicamento, 45);
+        return utilidades.isVisible(inputBuscarMedicamento);
+    }
+
+    public void sendKeysInputBuscarMedicamento(String medicamento) {
         utilidades.waitUntilElementIsVisible(inputBuscarMedicamento);
+        utilidades.esperarSegundos(2); // ⏳ pequeña pausa para evitar StaleElement
+        inputBuscarMedicamento.clear();
         inputBuscarMedicamento.sendKeys(medicamento);
     }
 
-    public void clickBtnPrimeraOpcionMedicamento(){
-        utilidades.waitUntilElementIsVisible(btnPrimeraOpcionMedicamento);
+    public void clickBtnPrimeraOpcionMedicamento() {
+        // Espera más larga porque el buscador de Ahumada carga lento
+        utilidades.waitUntilElementIsVisibleNonThrow(btnPrimeraOpcionMedicamento, 50);
+        utilidades.esperarSegundos(1);
         btnPrimeraOpcionMedicamento.click();
     }
 
     public String getTextNombreProducto() {
-        return textNombreProducto.getText();
+        utilidades.waitUntilElementIsVisibleNonThrow(textNombreProducto, 40);
+        return textNombreProducto.getText().trim();
     }
 
     public String getTextPrecioPromocionProducto() {
-        return textPrecioPromocionProducto.getText();
+        utilidades.waitUntilElementIsVisibleNonThrow(textPrecioPromocionProducto, 40);
+        return textPrecioPromocionProducto.getText().trim();
     }
 
     public String getTextPrecioNormalProducto() {
-        return textPrecioNormalProducto.getText();
+        utilidades.waitUntilElementIsVisibleNonThrow(textPrecioNormalProducto, 40);
+        return textPrecioNormalProducto.getText().trim();
     }
 
-    public boolean isVisibleTextoUsoDeCookies(){
-        utilidades.waitUntilElementIsVisibleNonThrow(textUsoDeCookies,10);
-        return utilidades.isVisible(textUsoDeCookies);
+    public boolean isVisibleTextoUsoDeCookies() {
+        try {
+            new WebDriverWait(driver, Duration.ofSeconds(30))
+                    .until(ExpectedConditions.visibilityOf(textUsoDeCookies));
+            return utilidades.isVisible(textUsoDeCookies);
+        } catch (TimeoutException e) {
+            return false;
+        }
     }
 
-    public void clickBtnSiUsoDeCookies(){
-        utilidades.waitUntilElementIsVisible(btnSiUsoDeCookies);
+    public void clickBtnSiUsoDeCookies() {
+        utilidades.waitUntilElementIsVisibleNonThrow(btnSiUsoDeCookies, 10);
         btnSiUsoDeCookies.click();
+        utilidades.esperarSegundos(2);
     }
 
-    public boolean isVisibleBtnCerrarAlertaOferta(){
-        utilidades.waitUntilElementIsVisibleNonThrow(btnCerrarAlertaOferta,15);
+    public boolean isVisibleBtnCerrarAlertaOferta() {
+        utilidades.waitUntilElementIsVisibleNonThrow(btnCerrarAlertaOferta, 20);
         return utilidades.isVisible(btnCerrarAlertaOferta);
     }
 
-    public void clickBtnCerrarAlertaOferta(){
-        utilidades.waitUntilElementIsVisible(btnCerrarAlertaOferta);
+    public void clickBtnCerrarAlertaOferta() {
+        utilidades.waitUntilElementIsVisibleNonThrow(btnCerrarAlertaOferta, 15);
         btnCerrarAlertaOferta.click();
+        utilidades.esperarSegundos(1);
     }
 
     public String getUrlImagenMedicamento() {
+        utilidades.waitUntilElementIsVisibleNonThrow(urlImagenMedicamento, 30);
         return urlImagenMedicamento.getAttribute("src");
+    }
+
+    public WebElement getTextoUsoDeCookies() {
+        return textUsoDeCookies;
     }
 
 }

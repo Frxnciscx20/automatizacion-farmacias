@@ -3,7 +3,13 @@ package cl.francisco.automatizacion.steps;
 import cl.francisco.automatizacion.db.MedicamentoDAO;
 import cl.francisco.automatizacion.pages.FarmaciasAhumadaPage;
 import io.cucumber.java.en.*;
+import org.junit.Assert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.edge.EdgeOptions;
 import io.github.bonigarcia.wdm.WebDriverManager;
@@ -13,10 +19,13 @@ import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
+import java.time.Duration;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import cl.francisco.automatizacion.utils.NotificacionClient;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 
 public class FarmaciasAhumadaStepDefinitions {
@@ -32,25 +41,41 @@ public class FarmaciasAhumadaStepDefinitions {
 
     @Given("que el usuario navega al sitio de Farmacias Ahumada")
     public void que_el_usuario_navega_al_sitio_de_Farmacias_Ahumada() {
-        System.setProperty("webdriver.edge.driver", "C:\\Users\\Francisco\\Documents\\Drivers\\msedgedriver.exe");
-
-        EdgeOptions options = new EdgeOptions();
-        options.addArguments("--remote-allow-origins=*");
-
-        driver = new EdgeDriver(options);
+        WebDriver driver = Hooks.getDriver();
         driver.manage().window().maximize();
         driver.get("https://www.farmaciasahumada.cl");
+
         ahumadaPage = new FarmaciasAhumadaPage(driver);
 
-        if (ahumadaPage.isVisibleTextoUsoDeCookies()) {
-            ahumadaPage.clickBtnSiUsoDeCookies();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(40));
+
+        // Esperar que el documento esté completamente cargado
+        wait.until(webDriver -> ((JavascriptExecutor) webDriver)
+                .executeScript("return document.readyState")
+                .equals("complete"));
+
+        // Esperar que el body sea visible
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("body")));
+
+        // Manejo del banner de cookies si aparece
+        try {
+            if (ahumadaPage.getTextoUsoDeCookies().isDisplayed()) {
+                ahumadaPage.clickBtnSiUsoDeCookies();
+                System.out.println("🍪 Banner de cookies detectado y aceptado correctamente");
+            }
+        } catch (Exception e) {
+            System.out.println("⚠️ No apareció el banner de cookies (posiblemente ya estaba aceptado).");
         }
+
+        System.out.println("🟢 Navegación a Farmacias Ahumada completada");
     }
+
 
 
 
     @When("^el usuario en Farmacias Ahumada busca el medicamento \"([^\"]*)\"$")
     public void el_usuario_busca_el_medicamento(String medicamento) {
+        Assert.assertTrue("No se visualiza", ahumadaPage.isVisibleInputBuscarMedicamento());
         ahumadaPage.sendKeysInputBuscarMedicamento(medicamento);
         ahumadaPage.clickBtnPrimeraOpcionMedicamento();
 
@@ -118,6 +143,7 @@ public class FarmaciasAhumadaStepDefinitions {
 
     @And("se guarda la información del medicamento en la base de datos")
     public void guardarInformacionEnBaseDeDatos() {
+        WebDriver driver = Hooks.getDriver();
         try {
             int idFarmacia = 2;
             String nombreFarmacia = "Farmacias Ahumada";
@@ -143,27 +169,26 @@ public class FarmaciasAhumadaStepDefinitions {
                 );
             }
 
-            // 🔍 Obtener último precio anterior (antes de guardar el nuevo)
+            // 🔍 Obtener último precio antes de guardar
             double precioAnterior = MedicamentoDAO.obtenerUltimoPrecioPromocional(idMedicamento, idFarmacia);
 
             // 💾 Guardar nuevo precio
             boolean stock = true;
             MedicamentoDAO.guardarPrecio(idMedicamento, idFarmacia, precioPromocional, precioNormal);
 
-            // 📩 Notificar solo si el precio bajó
+            // 📩 Notificar si el precio bajó
             if (precioPromocional < precioAnterior) {
                 NotificacionClient.notificarBajadaPrecio(idMedicamento, precioPromocional);
             }
 
-            System.out.println("Datos guardados correctamente.");
+            System.out.println("💾 Datos de Farmacias Ahumada guardados correctamente.");
 
         } catch (Exception e) {
-            System.err.println("Error al guardar los datos: " + e.getMessage());
+            System.err.println("❌ Error al guardar los datos de Farmacias Ahumada: " + e.getMessage());
             e.printStackTrace();
-        } finally {
-            driver.quit();
         }
     }
+
 
 
 

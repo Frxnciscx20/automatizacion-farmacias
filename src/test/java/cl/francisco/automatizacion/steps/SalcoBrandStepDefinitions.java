@@ -6,12 +6,20 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.Assert;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.edge.EdgeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
 
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,16 +36,18 @@ public class SalcoBrandStepDefinitions {
 
     @Given("que el usuario navega al sitio de SalcoBrand")
     public void que_el_usuario_navega_al_sitio_de_SalcoBrand() {
-        System.setProperty("webdriver.edge.driver", "C:\\Users\\Francisco\\Documents\\Drivers\\msedgedriver.exe");
-
-        EdgeOptions options = new EdgeOptions();
-        options.addArguments("--remote-allow-origins=*");
-
-        driver = new EdgeDriver(options);
+        WebDriver driver = Hooks.getDriver();
         driver.manage().window().maximize();
         driver.get("https://salcobrand.cl");
+
         salcoBrandPage = new SalcoBrandPage(driver);
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(40));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("body")));
+
+        System.out.println("🟢 Navegación a SalcoBrand completada");
     }
+
 
 
     @When("^el usuario en Farmacias SalcoBrand busca el medicamento \"([^\"]*)\"$")
@@ -125,7 +135,8 @@ public class SalcoBrandStepDefinitions {
     }
 
     @And("se guarda la información del medicamento de SalcoBrand en la base de datos")
-    public void guardarInformacionEnBaseDeDatos() {
+    public void guardarInformacionSalcobrandEnBaseDeDatos() {
+        WebDriver driver = Hooks.getDriver();
         try {
             int idFarmacia = 3;
             String nombreFarmacia = "SalcoBrand";
@@ -141,22 +152,36 @@ public class SalcoBrandStepDefinitions {
 
             int idMedicamento = MedicamentoDAO.buscarIdMedicamentoPorNombre(nombreProducto);
             if (idMedicamento == -1) {
-                idMedicamento = MedicamentoDAO.insertarMedicamento(nombreProducto, descripcion, laboratorio, presentacion, urlActual, imagenDelMedicamento);
+                idMedicamento = MedicamentoDAO.insertarMedicamento(
+                        nombreProducto,
+                        descripcion,
+                        laboratorio,
+                        presentacion,
+                        urlActual,
+                        imagenDelMedicamento
+                );
             }
 
+            // 🔍 Obtener precio anterior
+            double precioAnterior = MedicamentoDAO.obtenerUltimoPrecioPromocional(idMedicamento, idFarmacia);
+
+            // 💾 Guardar nuevo precio
             boolean stock = true;
             MedicamentoDAO.guardarPrecio(idMedicamento, idFarmacia, precioPromocional, precioNormal);
 
-            System.out.println("Datos de SalcoBrand guardados correctamente.");
+//            // 📩 Notificar si bajó
+//            if (precioPromocional < precioAnterior) {
+//                NotificacionClient.notificarBajadaPrecio(idMedicamento, precioPromocional);
+//            }
+
+            System.out.println("💾 Datos de SalcoBrand guardados correctamente.");
 
         } catch (Exception e) {
-            System.err.println("Error al guardar los datos de SalcoBrand: " + e.getMessage());
+            System.err.println("❌ Error al guardar los datos de SalcoBrand: " + e.getMessage());
             e.printStackTrace();
         }
-        finally {
-            driver.quit();
-        }
     }
+
 
     @And("guardo la URL de la imagen del medicamento en SalcoBrand")
     public void guardoLaURLDeLaImagenDelMedicamentoEnSalcoBrand() {

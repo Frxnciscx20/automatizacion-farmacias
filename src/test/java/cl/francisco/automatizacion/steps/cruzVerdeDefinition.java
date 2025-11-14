@@ -7,10 +7,18 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import io.github.bonigarcia.wdm.WebDriverManager;
+import org.junit.Assert;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.edge.EdgeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,25 +35,33 @@ public class cruzVerdeDefinition {
 
     @Given("que el usuario navega al sitio de Cruz Verde")
     public void que_el_usuario_navega_al_sitio_de_CruzVerde() {
-        System.setProperty("webdriver.edge.driver", "C:\\Users\\Francisco\\Documents\\Drivers\\msedgedriver.exe");
-
-        EdgeOptions options = new EdgeOptions();
-        options.addArguments("--remote-allow-origins=*");
-
-        driver = new EdgeDriver(options);
+        WebDriver driver = Hooks.getDriver();
         driver.manage().window().maximize();
         driver.get("https://www.cruzverde.cl");
+
         cruzVerdePage = new cruzVerdePage(driver);
 
-        if (cruzVerdePage.isVisibleAlertaLocacion()) {
-            cruzVerdePage.clickBtnAlertaLocacion();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(40));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("body")));
+
+        // Manejo de alerta de ubicación si aparece
+        try {
+            if (cruzVerdePage.isVisibleAlertaLocacion()) {
+                cruzVerdePage.clickBtnAlertaLocacion();
+                System.out.println("📍 Alerta de ubicación aceptada");
+            }
+        } catch (Exception e) {
+            System.out.println("⚠️ No apareció la alerta de ubicación");
         }
+
+        System.out.println("🟢 Navegación a Cruz Verde completada");
     }
 
 
 
     @When("^el usuario en Cruz Verde busca el medicamento \"([^\"]*)\"$")
     public void el_usuario_busca_el_medicamento(String medicamento) {
+        Assert.assertTrue("No se visualiza", cruzVerdePage.isVisibleInputBuscarMedicamentoCruzVerde());
         cruzVerdePage.sendKeysInputBuscarMedicamentoCruzVerde(medicamento);
         cruzVerdePage.clickBtnPrimeraOpcionMedicamentoSalcoCruzVerde(medicamento);
     }
@@ -112,7 +128,8 @@ public class cruzVerdeDefinition {
 
 
     @And("se guarda la información del medicamento Cruz Verde en la base de datos")
-    public void guardarInformacionEnBaseDeDatos() {
+    public void guardarInformacionCruzVerdeEnBaseDeDatos() {
+        WebDriver driver = Hooks.getDriver();
         try {
             int idFarmacia = 4;
             String nombreFarmacia = "Cruz Verde";
@@ -138,27 +155,26 @@ public class cruzVerdeDefinition {
                 );
             }
 
-            // 🔍 Obtener último precio anterior (antes de guardar el nuevo)
+            // 🔍 Obtener precio anterior
             double precioAnterior = MedicamentoDAO.obtenerUltimoPrecioPromocional(idMedicamento, idFarmacia);
 
             // 💾 Guardar nuevo precio
             boolean stock = true;
             MedicamentoDAO.guardarPrecio(idMedicamento, idFarmacia, precioPromocional, precioNormal);
 
-            // 📩 Notificar solo si el precio bajó
+            // 📩 Notificar si el precio bajó
             if (precioPromocional < precioAnterior) {
                 NotificacionClient.notificarBajadaPrecio(idMedicamento, precioPromocional);
             }
 
-            System.out.println("Datos guardados correctamente.");
+            System.out.println("💾 Datos de Cruz Verde guardados correctamente.");
 
         } catch (Exception e) {
-            System.err.println("Error al guardar los datos: " + e.getMessage());
+            System.err.println("❌ Error al guardar los datos de Cruz Verde: " + e.getMessage());
             e.printStackTrace();
-        } finally {
-            driver.quit();
         }
     }
+
 
 
 
