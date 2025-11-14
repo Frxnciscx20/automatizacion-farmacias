@@ -14,11 +14,11 @@ Feature: Búsqueda de medicamentos en SalcoBrand
     Examples:
       |  medicamento                   |
       |  Lamictal                      |
-#      |  Brevex                        |
-#      |  Ozempic                       |
-#      |  Ibuprofeno                    |
-#      |  Valpax                        |
-#      |  Paltomiel Pediátrico          |
-#      | Clonazepam (B) 2mg 30 Comprimidos |
+      |  Brevex                        |
+      |  Ozempic                       |
+      |  Ibuprofeno                    |
+      |  Valpax                        |
+      |  Paltomiel Pediátrico          |
+      | Clonazepam (B) 2mg 30 Comprimidos |
 
 
