@@ -14,11 +14,11 @@ Feature: Búsqueda de medicamentos en Cruz Verde
     Examples:
       |  medicamento                   |
       |  Brevex                        |
-#      |  Brevex                        |
-#      |  Ozempic                       |
-#      |  Ibuprofeno                    |
-#      |  Valpax                        |
-#      |  Paltomiel                     |
-#      |  Clonazepam                    |
+      |  Brevex                        |
+      |  Ozempic                       |
+      |  Ibuprofeno                    |
+      |  Valpax                        |
+      |  Paltomiel                     |
+      |  Clonazepam                    |
 
 
